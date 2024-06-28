@@ -1,0 +1,17 @@
+{
+  "name": "chatgpt-reword",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "./node_modules/.bin/web-ext build --overwrite-dest",
+    "run": "./node_modules/.bin/web-ext run"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "devDependencies": {
+    "web-ext": "^8.2.0"
+  }
+}

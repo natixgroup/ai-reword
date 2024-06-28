@@ -1,0 +1,5 @@
+# ignore standard Node development directories
+node_modules
+dist
+coverage
+web-ext-artifacts
