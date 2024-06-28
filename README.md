@@ -2,9 +2,11 @@
 
 Firefox extension that rewords text using ChatGPT.
 
-Currently only support french and Firefox.
+## Features
 
-PRs are welcome to add more languages and support for other browsers.
+- Currently only supports french
+- Currently only supports Firefox.
+- PRs are welcome to add more languages and support for other browsers.
 
 ## Installation
 
