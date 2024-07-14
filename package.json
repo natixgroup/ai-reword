@@ -1,5 +1,5 @@
 {
-  "name": "chatgpt-reword",
+  "name": "ai-reword",
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
@@ -12,6 +12,6 @@
   "license": "ISC",
   "description": "",
   "devDependencies": {
-    "web-ext": "^8.2.0"
+    "web-ext": "*"
   }
 }
