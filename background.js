@@ -1,3 +1,7 @@
+// This file has a problem: in browser.contextMenus.onClicked.addListener, the code is made of nested promises.
+// This is a bad practice because it makes the code harder to read and maintain.
+// Modify the code to use async/await instead of promises in the browser.contextMenus.onClicked.addListener call.
+// 
 async function getAPIToken(aiEngine) {
   if(aiEngine === 'chatgpt') {
     const result = await browser.storage.local.get('ChatGPTapiToken');
@@ -59,19 +63,20 @@ browser.contextMenus.create({
   contexts: ["selection"]
 });
 
-browser.contextMenus.onClicked.addListener((info, tab) => {
+browser.contextMenus.onClicked.addListener(async (info, tab) => {
   console.log(info);
   if (info.menuItemId === "get-ai-rewording") {
-    getReformulationFromChatGPT(info.selectionText)
-      .then(chatGPRRewording => {
-        getReformulationFromGemini(info.selectionText)
-          .then(geminiRewording => {
-            browser.tabs.sendMessage(tab.id, { 
-              action: "displayReworded", 
-              rewording: `${chatGPRRewording} -------- ${geminiRewording}`
-            });
-        }).catch(error => console.error("Error fetching rewording:", error));
-      })
-      .catch(error => console.error("Error fetching rewording:", error));
+    try {
+      const chatGPTRewording = await getReformulationFromChatGPT(info.selectionText);
+      const geminiRewording = await getReformulationFromGemini(info.selectionText);
+      
+      browser.tabs.sendMessage(tab.id, { 
+        action: "displayReworded", 
+        rewording: `${chatGPTRewording} -------- ${geminiRewording}`
+      });
+
+    } catch (error) {
+      console.error("Error fetching rewording:", error);
+    }
   }
 });

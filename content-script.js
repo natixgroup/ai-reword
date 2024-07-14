@@ -1,6 +1,3 @@
-// Currently, the createPopup function takes one by one the rewordedTexts array and creates a new paragraph element for each item in the array.
-// Modify the createPopup function to loop through the rewordedTexts array and create a new paragraph element for each item in the array.
-//
 function createPopup(rewordedText) {
   const popup = document.createElement('div');
   popup.id = 'reworded-text-popup';
