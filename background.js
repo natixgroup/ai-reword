@@ -1,10 +1,12 @@
 async function getAPIToken(aiEngine) {
   if(aiEngine === 'chatgpt') {
     const result = await browser.storage.local.get('ChatGPTapiToken');
+    console.log('ChatGPTapiToken:' + result.ChatGPTapiToken);
     return result.ChatGPTapiToken;
   }
   else if(aiEngine === 'gemini') {
     const result = await browser.storage.local.get('GeminiapiToken');
+    console.log('GeminiapiToken:' + result.GeminiapiToken);
     return result.GeminiapiToken;
   }
   else {
@@ -45,7 +47,7 @@ async function getReformulationFromGemini(text) {
     body: JSON.stringify({
       "system_instruction":{"parts":{"text": `${systemInstruction}`}},
       "contents":[{"parts":[{"text":`Reformule le message suivant de manière professionelle: ${text}`}]}]})
-    }
+  }
   );
   const data = await response.json();
   return data.candidates[0].content.parts[0].text;
@@ -61,11 +63,14 @@ browser.contextMenus.onClicked.addListener((info, tab) => {
   console.log(info);
   if (info.menuItemId === "get-ai-rewording") {
     getReformulationFromChatGPT(info.selectionText)
-      .then(rewording => {
-        browser.tabs.sendMessage(tab.id, { 
-          action: "displayReworded", 
-          rewording: rewording 
-        });
+      .then(chatGPRRewording => {
+        getReformulationFromGemini(info.selectionText)
+          .then(geminiRewording => {
+            browser.tabs.sendMessage(tab.id, { 
+              action: "displayReworded", 
+              rewording: `${chatGPRRewording} -------- ${geminiRewording}`
+            });
+        }).catch(error => console.error("Error fetching rewording:", error));
       })
       .catch(error => console.error("Error fetching rewording:", error));
   }

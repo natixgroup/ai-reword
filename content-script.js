@@ -13,12 +13,21 @@ function createPopup(rewordedText) {
   popup.style.transform = 'translate(-50%, -50%)';
   popup.style.zIndex = '1000'; 
 
-  // Add the reworded text to the popup
-  const textContent = document.createElement('p');
-  textContent.textContent = rewordedText;
-  popup.appendChild(textContent);
+  const rewordedTexts = rewordedText.split(' -------- ');
 
-  // Add a close button to the popup
+  const textContent1 = document.createElement('p');
+  textContent1.textContent = rewordedTexts[0];
+  popup.appendChild(textContent1);
+
+  // Add a line break to separate the two reworded texts
+  const lineBreak = document.createElement('hr');
+  lineBreak.style.margin = '10px 0';
+  popup.appendChild(lineBreak);
+
+  const textContent2 = document.createElement('p');
+  textContent2.textContent = rewordedTexts[1];
+  popup.appendChild(textContent2);
+
   const closeButton = document.createElement('button');
   closeButton.textContent = 'Close';
   closeButton.style.marginTop = '10px';
@@ -26,15 +35,11 @@ function createPopup(rewordedText) {
     document.body.removeChild(popup);
   });
   popup.appendChild(closeButton);
-
   return popup;
 }
 
 function displayRewordedText(rewordedText) {
-  // Create the popup element
   const popup = createPopup(rewordedText);
-
-  // Append the popup to the body
   document.body.appendChild(popup);
 }
 
