@@ -1,5 +1,6 @@
-
-// Function to create the popup element
+// Currently, the createPopup function takes one by one the rewordedTexts array and creates a new paragraph element for each item in the array.
+// Modify the createPopup function to loop through the rewordedTexts array and create a new paragraph element for each item in the array.
+//
 function createPopup(rewordedText) {
   const popup = document.createElement('div');
   popup.id = 'reworded-text-popup';
@@ -15,18 +16,17 @@ function createPopup(rewordedText) {
 
   const rewordedTexts = rewordedText.split(' -------- ');
 
-  const textContent1 = document.createElement('p');
-  textContent1.textContent = rewordedTexts[0];
-  popup.appendChild(textContent1);
+  for (let i = 0; i < rewordedTexts.length; i++) {
+    const textContent = document.createElement('p');
+    textContent.textContent = rewordedTexts[i];
+    popup.appendChild(textContent);
 
-  // Add a line break to separate the two reworded texts
-  const lineBreak = document.createElement('hr');
-  lineBreak.style.margin = '10px 0';
-  popup.appendChild(lineBreak);
-
-  const textContent2 = document.createElement('p');
-  textContent2.textContent = rewordedTexts[1];
-  popup.appendChild(textContent2);
+    if (i < rewordedTexts.length - 1) {
+      const lineBreak = document.createElement('hr');
+      lineBreak.style.margin = '10px 0';
+      popup.appendChild(lineBreak);
+    }
+  }
 
   const closeButton = document.createElement('button');
   closeButton.textContent = 'Close';
