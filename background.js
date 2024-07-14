@@ -1,10 +1,22 @@
-async function getAPIToken() {
-  const result = await browser.storage.local.get('apiToken');
-  return result.apiToken;
+async function getAPIToken(aiEngine) {
+  if(aiEngine === 'chatgpt') {
+    const result = await browser.storage.local.get('ChatGPTapiToken');
+    return result.ChatGPTapiToken;
+  }
+  else if(aiEngine === 'gemini') {
+    const result = await browser.storage.local.get('GeminiapiToken');
+    return result.GeminiapiToken;
+  }
+  else {
+    throw new Error('Invalid AI engine');
+  }
+
 }
 
+var systemInstruction = "Agis en tant qu'assistant pour reformuler les textes de manière professionelle.";
+
 async function getReformulationFromChatGPT(text) {
-  const apiKey = await getAPIToken(); 
+  const apiKey = await getAPIToken('chatgpt'); 
   const response = await fetch('https://api.openai.com/v1/chat/completions', {
     method: 'POST',
     headers: {
@@ -14,27 +26,42 @@ async function getReformulationFromChatGPT(text) {
     body: JSON.stringify({
       model: "gpt-4-turbo", 
       messages: [
-        { "role": "system", "content": "Agis en tant qu'assistant pour reformuler les textes de manière professionelle." },
+        { "role": "system", "content": `${systemInstruction}` },
         { "role": "user", "content": `Reformule le message suivant de manière professionelle: ${text}` }
       ]
     })
   });
-
   const data = await response.json();
   return data.choices[0].message.content;
 }
 
+async function getReformulationFromGemini(text) {
+  const apiKey = await getAPIToken('gemini'); 
+  const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${apiKey}`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      "system_instruction":{"parts":{"text": `${systemInstruction}`}},
+      "contents":[{"parts":[{"text":`Reformule le message suivant de manière professionelle: ${text}`}]}]})
+    }
+  );
+  const data = await response.json();
+  return data.candidates[0].content.parts[0].text;
+}
+
 browser.contextMenus.create({
-  id: "get-chatgpt-rewording",
-  title: "Reformuler avec ChatGPT",
+  id: "get-ai-rewording",
+  title: "Reformuler avec ChatGPT ou Gemini",
   contexts: ["selection"]
 });
 
 browser.contextMenus.onClicked.addListener((info, tab) => {
-  if (info.menuItemId === "get-chatgpt-rewording") {
+  console.log(info);
+  if (info.menuItemId === "get-ai-rewording") {
     getReformulationFromChatGPT(info.selectionText)
       .then(rewording => {
-        // Send the reworded message back to the content script 
         browser.tabs.sendMessage(tab.id, { 
           action: "displayReworded", 
           rewording: rewording 
