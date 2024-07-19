@@ -1,7 +1,4 @@
-// This file has a problem: in browser.contextMenus.onClicked.addListener, the code is made of nested promises.
-// This is a bad practice because it makes the code harder to read and maintain.
-// Modify the code to use async/await instead of promises in the browser.contextMenus.onClicked.addListener call.
-// 
+
 async function getAPIToken(aiEngine) {
   if(aiEngine === 'chatgpt') {
     const result = await browser.storage.local.get('ChatGPTapiToken');
@@ -43,16 +40,17 @@ async function getReformulationFromChatGPT(text) {
 
 async function getReformulationFromGemini(text) {
   const apiKey = await getAPIToken('gemini'); 
-  const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${apiKey}`, {
+  const response = await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent', {
     method: 'POST',
     headers: {
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json',
+      'x-goog-api-key': apiKey 
     },
     body: JSON.stringify({
       "system_instruction":{"parts":{"text": `${systemInstruction}`}},
       "contents":[{"parts":[{"text":`Reformule le message suivant de manière professionelle: ${text}`}]}]})
-  }
-  );
+  });
+
   const data = await response.json();
   return data.candidates[0].content.parts[0].text;
 }
