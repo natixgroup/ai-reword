@@ -1,4 +1,3 @@
-
 async function getAPIToken(aiEngine) {
   if(aiEngine === 'chatgpt') {
     const result = await browser.storage.local.get('ChatGPTapiToken');
