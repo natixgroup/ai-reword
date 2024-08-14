@@ -26,7 +26,7 @@ async function getReformulationFromChatGPT(text) {
       'Authorization': `Bearer ${apiKey}`
     },
     body: JSON.stringify({
-      model: "gpt-4-turbo", 
+      model: "gpt-4o-mini", 
       messages: [
         { "role": "system", "content": `${systemInstruction}` },
         { "role": "user", "content": `Reformule le message suivant de manière professionelle: ${text}` }

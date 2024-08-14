@@ -6,6 +6,7 @@
 npm install
 ./node_modules/.bin/web-ext build --overwrite-dest
 ```
+
 Then install the extension from the file `web-ext-artifacts/*.zip`.
 
 ## Development
